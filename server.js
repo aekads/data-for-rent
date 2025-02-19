@@ -33,35 +33,31 @@ app.get("/", async (req, res) => {
 
 // Update per_screen_rent
 app.post("/update", async (req, res) => {
-  const { screenid, per_screen_rent } = req.body;
-
-  if (!screenid || !per_screen_rent) {
-    return res.status(400).json({ error: "Missing screenid or per_screen_rent" });
-  }
-
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-
-    const query = `
-      UPDATE public.screens SET per_screen_rent = $1 WHERE screenid = $2;
-      UPDATE public.screen_proposal SET per_screen_rent = $1 WHERE screenid = $2;
-      UPDATE public.admin_screens SET per_screen_rent = $1 WHERE screenid = $2;
-    `;
-
-    await client.query(query, [per_screen_rent, screenid]);
-
-    await client.query("COMMIT");
-    res.json({ success: true, message: "Screen rent updated successfully" });
-  } catch (err) {
-    await client.query("ROLLBACK");
-    console.error("Error updating rent:", err);
-    res.status(500).json({ error: "Error updating rent", details: err.message });
-  } finally {
-    client.release();
-  }
-});
-
+    const { screenid, per_screen_rent } = req.body;
+  
+    if (!screenid || !per_screen_rent) {
+      return res.status(400).json({ error: "Missing screenid or per_screen_rent" });
+    }
+  
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+  
+      await client.query("UPDATE public.screens SET per_screen_rent = $1 WHERE screenid = $2", [per_screen_rent, screenid]);
+      await client.query("UPDATE public.screen_proposal SET per_screen_rent = $1 WHERE screenid = $2", [per_screen_rent, screenid]);
+      await client.query("UPDATE public.admin_screens SET per_screen_rent = $1 WHERE screenid = $2", [per_screen_rent, screenid]);
+  
+      await client.query("COMMIT");
+      res.json({ success: true, message: "Screen rent updated successfully" });
+    } catch (err) {
+      await client.query("ROLLBACK");
+      console.error("Error updating rent:", err);
+      res.status(500).json({ error: "Error updating rent", details: err.message });
+    } finally {
+      client.release();
+    }
+  });
+  
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
