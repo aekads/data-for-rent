@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Screen Rent</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #f4f4f4; }
+        form { display: flex; align-items: center; gap: 10px; }
+        input[type="number"] { width: 80px; padding: 5px; }
+        button { padding: 5px 10px; background: green; color: white; border: none; cursor: pointer; }
+        button:hover { background: darkgreen; }
+    </style>
+</head>
+<body>
+
+    <h2>Update Per Screen Rent</h2>
+
+    <table>
+        <tr>
+            <th>Screen ID</th>
+            <th>Screen Name</th>
+            <th>Per Screen Rent</th>
+            <th>Action</th>
+        </tr>
+        <% screens.forEach(screen => { %>
+            <tr>
+                <td><%= screen.screenid %></td>
+                <td><%= screen.screenname %></td>
+                <td>
+                    <form action="/update" method="POST">
+                        <input type="hidden" name="screenid" value="<%= screen.screenid %>">
+                        <input type="number" name="per_screen_rent" value="<%= screen.per_screen_rent || 0 %>" required>
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
+            </tr>
+        <% }); %>
+    </table>
+
+</body>
+</html>
