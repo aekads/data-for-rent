@@ -45,7 +45,7 @@ app.post("/update", async (req, res) => {
   
       await client.query("UPDATE public.screens SET per_screen_rent = $1 WHERE screenid = $2", [per_screen_rent, screenid]);
       await client.query("UPDATE public.screen_proposal SET per_screen_rent = $1 WHERE screenid = $2", [per_screen_rent, screenid]);
-      await client.query("UPDATE public.admin_screens SET per_screen_rent = $1 WHERE screenid = $2", [per_screen_rent, screenid]);
+      await client.query("UPDATE public.admin_screens SET per_month_rent = $1 WHERE screenid = $2", [per_screen_rent, screenid]);
   
       await client.query("COMMIT");
       res.json({ success: true, message: "Screen rent updated successfully" });
